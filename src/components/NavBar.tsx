@@ -12,7 +12,7 @@ import axios from "axios";
 
 const NavBar = () => {
   const [category, setCategory] = useState("All");
-  let [categories, setCategories] = useState<string[]>(["All"]);
+  let [categories, setCategories] = useState<string[]>(["all"]);
   const capitalizeAndReplace = (str: string) => {
     const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
     return capitalized.replace(/-/g, " ");
@@ -20,14 +20,8 @@ const NavBar = () => {
   if (categories.length == 1) {
     axios
       .get("https://dummyjson.com/products/categories")
-      .then((res) =>
-        setCategories(
-          categories.concat(
-            res.data.map((item: string) => capitalizeAndReplace(item))
-          )
-        )
-      );
-    console.log(categories);
+      .then((res) => setCategories(categories.concat(res.data)));
+    // console.log(categories);
   } else {
     return (
       <Navbar className="navbar">
@@ -36,19 +30,22 @@ const NavBar = () => {
             <div>
               <img
                 alt=""
-                src="src/assets/logo.png"
+                src="src/assets/logo.svg"
                 className="d-inline-block align-top"
               />{" "}
-              InnoShop
+              <label>InnoShop</label>
             </div>
           </Navbar.Brand>
 
           <Form>
             <InputGroup>
-              <NavDropdown title={category} id="basic-nav-dropdown">
+              <NavDropdown
+                title={capitalizeAndReplace(category)}
+                id="basic-nav-dropdown"
+              >
                 {categories.map((r, index) => (
                   <NavDropdown.Item key={index} onClick={() => setCategory(r)}>
-                    {r}
+                    {capitalizeAndReplace(r)}
                   </NavDropdown.Item>
                 ))}
               </NavDropdown>
@@ -60,7 +57,7 @@ const NavBar = () => {
               <button className="btn bg-white" type="submit">
                 <img
                   alt=""
-                  src="src/assets/search.png"
+                  src="src/assets/search.svg"
                   className="d-inline-block align-top"
                 />
               </button>
@@ -69,10 +66,10 @@ const NavBar = () => {
           <Nav.Link href="/cart">
             <img
               alt=""
-              src="src/assets/cart.png"
+              src="src/assets/cart.svg"
               className="d-inline-block align-top"
             />{" "}
-            Cart
+            <p>Cart</p>
           </Nav.Link>
         </Container>
       </Navbar>

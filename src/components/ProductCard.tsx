@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import AddToCart from "./AddToCart";
 
 interface Props {
   id: number;
+  _cart: [any, any];
 }
 
-const ProductCard = ({ id }: Props) => {
+const ProductCard = ({ id, _cart }: Props) => {
   const initialProduct = {
     id: -1,
     title: "",
@@ -22,37 +24,41 @@ const ProductCard = ({ id }: Props) => {
     images: [],
   };
   const [productDetail, setProductDetail] = useState(initialProduct);
+  const [error, setError] = useState("");
   if (productDetail === initialProduct) {
     axios
       .get("https://dummyjson.com/products/" + id)
-      .then((res) => setProductDetail(res.data));
+      .then((res) => setProductDetail(res.data))
+      .catch((err) => setError(err));
   }
-  console.log(productDetail);
-  return (
-    <Card style={{ width: "18rem" }}>
-      <Card.Img variant="top" src={productDetail.thumbnail} />
-      <Card.Body>
-        <Card.Title>{productDetail.title}</Card.Title>
-        <Card.Subtitle>{productDetail.brand} </Card.Subtitle>
-        <Card.Subtitle>{productDetail.rating}</Card.Subtitle>
-        <Card.Text>${productDetail.price}</Card.Text>
-        <Card.Text>
-          $
-          {parseInt(
-            (productDetail.price / (100 - productDetail.discountPercentage)) *
-              100
-          )}
-        </Card.Text>
-        <Button variant="primary">
-          <img
-            alt=""
-            src="src/assets/cart.png"
-            className="d-inline-block align-top"
-          />{" "}
-        </Button>
-      </Card.Body>
-    </Card>
-  );
+  // console.log(productDetail);
+  else if (error == "") {
+    return (
+      <Card style={{ width: "18rem" }}>
+        <Card.Img variant="top" src={productDetail.thumbnail} />
+        <Card.Body>
+          <h4>{productDetail.title}</h4>
+          <p className="brand">{productDetail.brand}</p>{" "}
+          <p>{productDetail.rating}</p>
+          <h3 className="price">
+            $
+            {parseInt(
+              (
+                (productDetail.price *
+                  (100 - productDetail.discountPercentage)) /
+                100
+              ).toString()
+            )}
+          </h3>
+          <h4 className="old-price">${productDetail.price}</h4>
+          <AddToCart
+            type="ProductCard"
+            productId={productDetail.id}
+            _cart={_cart}
+          />
+        </Card.Body>
+      </Card>
+    );
+  }
 };
-
 export default ProductCard;
