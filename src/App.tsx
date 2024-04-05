@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import NavBar from "./components/NavBar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ProductCard from "./components/ProductCard";
 import ProductPage from "./components/ProductPage";
 import axios from "axios";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Routes,
+  useParams,
+} from "react-router-dom";
+import Cart from "./components/Cart";
+import ProductList from "./components/ProductList";
 
 interface Product {
   id: number;
@@ -28,6 +37,8 @@ interface Cart {
 }
 
 function App() {
+  const [cart, setCart] = useState(false);
+
   const initalCart = {
     id: 0,
     products: [],
@@ -37,18 +48,57 @@ function App() {
     totalProducts: 0,
     totalQuantity: 0,
   };
-  const [count, setCount] = useState(0);
-  const [cart, setCart] = useState(false);
-  let ids = Array.from({ length: 10 }, (_, index) => index + 1);
+  const [category, setCategory] = useState("All");
+  const [categories, setCategories] = useState<string[]>(["all"]);
+  useEffect(() => {
+    axios
+      .get("https://dummyjson.com/products/categories")
+      .then((res) => setCategories(categories.concat(res.data)));
+  }, []);
   return (
-    <>
-      <NavBar />
-      {/* {ids.map((id, index) => (
-        <ProductCard key={index} id={id} />
-      ))} */}
-      <ProductPage id={1} _cart={[cart, setCart]} />
-    </>
+    <Router>
+      <NavBar _cart={[cart, setCart]}></NavBar>
+      <div>
+        {/* The React Router that makes the HTML above work */}
+        <Routes>
+          <Route path="/" element={<div />} />
+          <Route
+            path="/product/:id"
+            element={
+              <Product
+                _category={[category, setCategory]}
+                _cart={[cart, setCart]}
+              />
+            }
+          />
+          <Route path="/cart" element={<Cart _cart={[cart, setCart]} />} />
+        </Routes>
+      </div>
+    </Router>
+    // <>
+    //   <NavBar />
+    //   {/* {ids.map((id, index) => (
+    //     <ProductCard key={index} id={id} />
+    //   ))} */}
+    //   <ProductPage id={1} _cart={[cart, setCart]} />
+    // </>
   );
 }
 
+function Product({
+  _category,
+  _cart,
+}: {
+  _category: [any, any];
+  _cart: [any, any];
+}) {
+  let { id } = useParams();
+
+  return (
+    <>
+      <NavBar _cart={_cart} />
+      <ProductPage id={Number(id)} _cart={_cart} />
+    </>
+  );
+}
 export default App;

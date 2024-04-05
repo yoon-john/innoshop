@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
@@ -24,41 +24,36 @@ const ProductCard = ({ id, _cart }: Props) => {
     images: [],
   };
   const [productDetail, setProductDetail] = useState(initialProduct);
-  const [error, setError] = useState("");
-  if (productDetail === initialProduct) {
+  useEffect(() => {
     axios
       .get("https://dummyjson.com/products/" + id)
-      .then((res) => setProductDetail(res.data))
-      .catch((err) => setError(err));
-  }
+      .then((res) => setProductDetail(res.data));
+  }, [id]);
   // console.log(productDetail);
-  else if (error == "") {
-    return (
-      <Card style={{ width: "18rem" }}>
-        <Card.Img variant="top" src={productDetail.thumbnail} />
-        <Card.Body>
-          <h4>{productDetail.title}</h4>
-          <p className="brand">{productDetail.brand}</p>{" "}
-          <p>{productDetail.rating}</p>
-          <h3 className="price">
-            $
-            {parseInt(
-              (
-                (productDetail.price *
-                  (100 - productDetail.discountPercentage)) /
-                100
-              ).toString()
-            )}
-          </h3>
-          <h4 className="old-price">${productDetail.price}</h4>
-          <AddToCart
-            type="ProductCard"
-            productId={productDetail.id}
-            _cart={_cart}
-          />
-        </Card.Body>
-      </Card>
-    );
-  }
+  return (
+    <Card style={{ width: "18rem" }}>
+      <Card.Img variant="top" src={productDetail.thumbnail} />
+      <Card.Body>
+        <h4>{productDetail.title}</h4>
+        <p className="brand">{productDetail.brand}</p>{" "}
+        <p>{productDetail.rating}</p>
+        <h3 className="price">
+          $
+          {parseInt(
+            (
+              (productDetail.price * (100 - productDetail.discountPercentage)) /
+              100
+            ).toString()
+          )}
+        </h3>
+        <h4 className="old-price">${productDetail.price}</h4>
+        <AddToCart
+          type="ProductCard"
+          productId={productDetail.id}
+          _cart={_cart}
+        />
+      </Card.Body>
+    </Card>
+  );
 };
 export default ProductCard;

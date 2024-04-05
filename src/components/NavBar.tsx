@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
@@ -9,21 +9,28 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { Nav } from "react-bootstrap";
 import axios from "axios";
+import ProductList from "./ProductList";
 
-const NavBar = () => {
-  const [category, setCategory] = useState("All");
-  let [categories, setCategories] = useState<string[]>(["all"]);
+interface Props {
+  _cart: [any, any];
+}
+
+const NavBar = ({ _cart }: Props) => {
+  // const [category, setCategory] = useState("All");
+  const [categories, setCategories] = useState<string[]>(["all"]);
+  const [category, setCategory] = useState("all");
   const capitalizeAndReplace = (str: string) => {
     const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
     return capitalized.replace(/-/g, " ");
   };
-  if (categories.length == 1) {
+  useEffect(() => {
     axios
       .get("https://dummyjson.com/products/categories")
       .then((res) => setCategories(categories.concat(res.data)));
-    // console.log(categories);
-  } else {
-    return (
+  }, []);
+
+  return (
+    <>
       <Navbar className="navbar">
         <Container>
           <Navbar.Brand href="/">
@@ -73,7 +80,8 @@ const NavBar = () => {
           </Nav.Link>
         </Container>
       </Navbar>
-    );
-  }
+      <ProductList _cart={_cart} category={category} />
+    </>
+  );
 };
 export default NavBar;
