@@ -12,8 +12,8 @@ import {
   Routes,
   useParams,
 } from "react-router-dom";
-import Cart from "./components/Cart";
 import ProductList from "./components/ProductList";
+import BrowsePage from "./components/BrowsePage";
 
 interface Product {
   id: number;
@@ -37,8 +37,6 @@ interface Cart {
 }
 
 function App() {
-  const [cart, setCart] = useState(false);
-
   const initalCart = {
     id: 0,
     products: [],
@@ -48,40 +46,35 @@ function App() {
     totalProducts: 0,
     totalQuantity: 0,
   };
-  const [category, setCategory] = useState("All");
-  const [categories, setCategories] = useState<string[]>(["all"]);
-  useEffect(() => {
-    axios
-      .get("https://dummyjson.com/products/categories")
-      .then((res) => setCategories(categories.concat(res.data)));
-  }, []);
+  const [cart, setCart] = useState(initalCart);
+
   return (
-    <Router>
-      <NavBar _cart={[cart, setCart]}></NavBar>
-      <div>
-        {/* The React Router that makes the HTML above work */}
-        <Routes>
-          <Route path="/" element={<div />} />
-          <Route
-            path="/product/:id"
-            element={
-              <Product
-                _category={[category, setCategory]}
-                _cart={[cart, setCart]}
-              />
-            }
-          />
-          <Route path="/cart" element={<Cart _cart={[cart, setCart]} />} />
-        </Routes>
-      </div>
-    </Router>
-    // <>
+    // <Router>
+    //   <div>
+    //     {/* The React Router that makes the HTML above work */}
+    //     <Routes>
+    //       <Route path="/" element={<BrowsePage _cart={[cart, setCart]} />} />
+    //       {/* <Route
+    //         path="/product/:id"
+    //         element={
+    //           <Product
+    //             _category={[category, setCategory]}
+    //             _cart={[cart, setCart]}
+    //           />
+    //         }
+    //       /> */}
+    //       <Route path="/cart" element={<Cart _cart={[cart, setCart]} />} />
+    //     </Routes>
+    //   </div>
+    // </Router>
+    // // <>
     //   <NavBar />
     //   {/* {ids.map((id, index) => (
     //     <ProductCard key={index} id={id} />
     //   ))} */}
     //   <ProductPage id={1} _cart={[cart, setCart]} />
     // </>
+    <BrowsePage _cart={[cart, setCart]} />
   );
 }
 
@@ -96,7 +89,6 @@ function Product({
 
   return (
     <>
-      <NavBar _cart={_cart} />
       <ProductPage id={Number(id)} _cart={_cart} />
     </>
   );

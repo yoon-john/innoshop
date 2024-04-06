@@ -13,12 +13,25 @@ import ProductList from "./ProductList";
 
 interface Props {
   _cart: [any, any];
+  category: string;
+  assignSetCategory: (category: string) => void;
+  search: string;
+  assignSetSearch: (search: string) => void;
+  cartActive: boolean;
+  assignSetCartActive: (bool: boolean) => void;
 }
 
-const NavBar = ({ _cart }: Props) => {
-  // const [category, setCategory] = useState("All");
+const NavBar = ({
+  _cart,
+  category,
+  assignSetCategory,
+  search,
+  assignSetSearch,
+  cartActive,
+  assignSetCartActive,
+}: Props) => {
   const [categories, setCategories] = useState<string[]>(["all"]);
-  const [category, setCategory] = useState("all");
+  const [input, setInput] = useState("");
   const capitalizeAndReplace = (str: string) => {
     const capitalized = str.charAt(0).toUpperCase() + str.slice(1);
     return capitalized.replace(/-/g, " ");
@@ -33,7 +46,13 @@ const NavBar = ({ _cart }: Props) => {
     <>
       <Navbar className="navbar">
         <Container>
-          <Navbar.Brand href="/">
+          <Navbar.Brand
+            onClick={() => {
+              assignSetCartActive(false);
+              assignSetCategory("all");
+              assignSetSearch("");
+            }}
+          >
             <div>
               <img
                 alt=""
@@ -48,10 +67,17 @@ const NavBar = ({ _cart }: Props) => {
             <InputGroup>
               <NavDropdown
                 title={capitalizeAndReplace(category)}
-                id="basic-nav-dropdown"
+                id="navbarScrollingDropdown"
+                style={{ display: "flex", flexDirection: "column" }}
               >
                 {categories.map((r, index) => (
-                  <NavDropdown.Item key={index} onClick={() => setCategory(r)}>
+                  <NavDropdown.Item
+                    key={index}
+                    onClick={() => {
+                      assignSetCategory(r);
+                      assignSetCartActive(false);
+                    }}
+                  >
                     {capitalizeAndReplace(r)}
                   </NavDropdown.Item>
                 ))}
@@ -60,6 +86,13 @@ const NavBar = ({ _cart }: Props) => {
                 placeholder="Search InnoShop"
                 aria-label="Search"
                 aria-describedby="basic-addon1"
+                onChange={(e) => {
+                  setInput(e.target.value);
+                }}
+                onSubmit={(e) => {
+                  assignSetSearch(input);
+                  assignSetCartActive(false);
+                }}
               />
               <button className="btn bg-white" type="submit">
                 <img
@@ -70,17 +103,23 @@ const NavBar = ({ _cart }: Props) => {
               </button>
             </InputGroup>
           </Form>
-          <Nav.Link href="/cart">
-            <img
-              alt=""
-              src="src/assets/cart.svg"
-              className="d-inline-block align-top"
-            />{" "}
-            <p>Cart</p>
+          <Nav.Link onClick={() => assignSetCartActive(true)}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <img
+                alt=""
+                src="src/assets/cart.svg"
+                className="d-inline-block align-top"
+              />{" "}
+              <p>Cart</p>
+            </div>
           </Nav.Link>
         </Container>
       </Navbar>
-      <ProductList _cart={_cart} category={category} />
     </>
   );
 };

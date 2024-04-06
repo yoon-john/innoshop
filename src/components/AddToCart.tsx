@@ -94,6 +94,12 @@ const AddToCart = ({ type, productId, _cart }: Props) => {
     } else if (
       cart.products.some((product: { id: number }) => product.id === productId)
     ) {
+      let _quantity =
+        cart.products[
+          cart.products.findIndex(
+            (product: { id: number }) => product.id === productId
+          )
+        ].quantity;
       return (
         <h3>
           <Row style={{ flexShrink: 0 }}>
@@ -105,7 +111,7 @@ const AddToCart = ({ type, productId, _cart }: Props) => {
                 -
               </Button>
             </Col>
-            <Col>{quantity}</Col>
+            <Col>{_quantity}</Col>
             <Col>
               <Button
                 bsPrefix="circular-button"
@@ -131,6 +137,12 @@ const AddToCart = ({ type, productId, _cart }: Props) => {
     } else if (
       cart.products.some((product: { id: number }) => product.id === productId)
     ) {
+      let _quantity =
+        cart.products[
+          cart.products.findIndex(
+            (product: { id: number }) => product.id === productId
+          )
+        ].quantity;
       return (
         <h2>
           <Row>
@@ -142,7 +154,7 @@ const AddToCart = ({ type, productId, _cart }: Props) => {
                 -
               </Button>
             </Col>
-            <Col>{quantity}</Col>
+            <Col>{_quantity}</Col>
             <Col>
               <Button
                 bsPrefix="circular-button"
