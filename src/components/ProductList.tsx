@@ -17,12 +17,17 @@ const ProductList = ({ category, search, _cart, cartActive }: Props) => {
   console.log(search);
   useEffect(() => {
     if (search !== "") {
-      axios.get(`http://localhost:5000/api/search?q=${search}`).then((res) => {
-        setIds(res.data);
-      });
+      console.log(search);
+      axios
+        .get(`https://dummyjson.com/products/search?q=${search}`)
+        .then((res) => {
+          const newIds: number[] = [];
+          res.data.products.map((item: { id: never }) => newIds.push(item.id));
+          setIds([...newIds]);
+        });
     } else if (category === "all") {
       axios.get("https://dummyjson.com/products").then((res) => {
-        const newIds: React.SetStateAction<never[]> = [];
+        const newIds: number[] = [];
         res.data.products.map((item: { id: never }) => newIds.push(item.id));
         setIds([...newIds]);
       });
@@ -37,25 +42,33 @@ const ProductList = ({ category, search, _cart, cartActive }: Props) => {
     }
   }, [category, search]);
   if (cartActive) {
-    return (
-      <div>
-        {_cart[0].products.map(
-          (item: { id: number }, key: React.Key | null | undefined) => (
-            <ProductCard key={key} id={item.id} _cart={_cart}></ProductCard>
-          )
-        )}
-      </div>
-    );
+    if (_cart[0].products.length > 0) {
+      return (
+        <Row md="4">
+          {_cart[0].products.map(
+            (item: { id: number }, key: React.Key | null | undefined) => (
+              <ProductCard key={key} id={item.id} _cart={_cart}></ProductCard>
+            )
+          )}
+        </Row>
+      );
+    } else {
+      return <h4 className="empty-message">Your Cart is Empty...</h4>;
+    }
   } else {
-    return (
-      <Row md="4">
-        {ids.map((id, index) => (
-          <Col key={index}>
-            <ProductCard id={id} _cart={_cart} />
-          </Col>
-        ))}
-      </Row>
-    );
+    if (ids.length > 0) {
+      return (
+        <Row md="4">
+          {ids.map((id, index) => (
+            <Col key={index}>
+              <ProductCard id={id} _cart={_cart} />
+            </Col>
+          ))}
+        </Row>
+      );
+    } else {
+      return <h4 className="empty-message">Your Search is Empty...</h4>;
+    }
   }
 };
 

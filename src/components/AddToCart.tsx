@@ -66,7 +66,9 @@ const AddToCart = ({ type, productId, _cart }: Props) => {
       setQuantity(cart.products[index].quantity);
     } else if (cart.products[index].quantity == 1) {
       cart.products.splice(index, 1);
+      const newCart = JSON.parse(JSON.stringify(cart));
       setQuantity(0);
+      setCart(newCart);
     }
     // Following put request will fail, as the new cart is not in server.
     //   axios

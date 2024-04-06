@@ -42,6 +42,10 @@ const NavBar = ({
       .then((res) => setCategories(categories.concat(res.data)));
   }, []);
 
+  const handleClick = () => {
+    assignSetSearch(input);
+  };
+
   return (
     <>
       <Navbar className="navbar">
@@ -63,7 +67,13 @@ const NavBar = ({
             </div>
           </Navbar.Brand>
 
-          <Form>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              assignSetCartActive(false);
+              handleClick();
+            }}
+          >
             <InputGroup>
               <NavDropdown
                 title={capitalizeAndReplace(category)}
@@ -89,12 +99,14 @@ const NavBar = ({
                 onChange={(e) => {
                   setInput(e.target.value);
                 }}
-                onSubmit={(e) => {
-                  assignSetSearch(input);
-                  assignSetCartActive(false);
-                }}
               />
-              <button className="btn bg-white" type="submit">
+              <button
+                className="btn bg-white"
+                type="button"
+                onClick={() => {
+                  handleClick();
+                }}
+              >
                 <img
                   alt=""
                   src="src/assets/search.svg"

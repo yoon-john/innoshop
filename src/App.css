@@ -157,3 +157,8 @@ label {
   align-self: center;
   margin-top: 0;
 }
+
+.empty-message {
+  margin-top: 30%;
+  text-align: center;
+}
