@@ -3,13 +3,9 @@ import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
 import InputGroup from "react-bootstrap/InputGroup";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import { Nav } from "react-bootstrap";
 import axios from "axios";
-import ProductList from "./ProductList";
 
 interface Props {
   _cart: [any, any];

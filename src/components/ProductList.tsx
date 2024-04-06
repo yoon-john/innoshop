@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "./NavBar";
-import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Col, Row } from "react-bootstrap";
 import ProductCard from "./ProductCard";
